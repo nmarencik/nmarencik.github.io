@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+	<html>
+		<head>
+			<title>Rocket Command</title>
+			<style>
+				#canv{
+					position: fixed;
+					left: 0px;
+					top: 0px;
+					
+				}
+				
+			</style>
+		</head>
+		
+		
+		<canvas id="canv" width="10000" height="10000" onkeydown="keyisdown(event)" onkeyup="keyisup(event)"></canvas>
+	
+	
+		<script>
+				var canv = document.getElementById("canv");
+				var ctx = canv.getContext("2d");
+		
+				canv.width = window.innerWidth;
+				canv.height = window.innerHeight;
+				var wid = window.innerWidth;
+				var hig = window.innerHeight;
+				
+				var keys = [];
+				
+				var theta = 0;
+				var alpha = 90;
+				var rx = 160;
+				var ry = hig*0.9-20;
+				var vx = 0;
+				var vy = 0;
+				var thrust = 0.5;//0.5
+				var rm = 10;
+				
+				var rotateSpd = 2; //2
+				var drawThrust = false;
+				
+				var grav = 0.3;
+				var airResistance = 0.2;//0.15
+				
+				var dead = false;
+				
+				//====FUNCTIONS=======
+				
+				function toRadians(deg){
+					return (deg*(Math.PI / 180));
+				}
+				
+				function drawSky(){
+					ctx.fillStyle = "lightblue";
+					ctx.fillRect(0,0,wid,hig);
+				}
+				
+				function drawRocket(x,y,r,flame){
+					ctx.translate(x,y);
+					ctx.rotate(toRadians(r));
+					ctx.translate(-10,-50);
+					ctx.fillStyle = "white";
+					ctx.fillRect(0,0,20,60);
+					ctx.beginPath();
+					ctx.moveTo(0,0);
+					ctx.lineTo(10,-20);
+					ctx.lineTo(20,0);
+					ctx.fill();
+					ctx.fillStyle = "grey";
+					ctx.beginPath();
+					ctx.moveTo(10,60);
+					ctx.lineTo(0,70);
+					ctx.lineTo(20,70);
+					ctx.fill();
+					ctx.fillStyle = "black";
+					ctx.beginPath();
+					ctx.moveTo(0,40);
+					ctx.lineTo(-10,70);
+					ctx.lineTo(0,55);
+					ctx.fill();
+					ctx.beginPath();
+					ctx.moveTo(20,40);
+					ctx.lineTo(30,70);
+					ctx.lineTo(20,55);
+					ctx.fill();
+					if(flame == true){
+						ctx.fillStyle = "orange";
+						ctx.beginPath();
+						ctx.moveTo(0,70);
+						ctx.lineTo(10,120);
+						ctx.lineTo(20,70);
+						ctx.fill();
+						ctx.fillStyle = "yellow";
+						ctx.beginPath();
+						ctx.moveTo(3,70);
+						ctx.lineTo(10,100);
+						ctx.lineTo(17,70);
+						ctx.fill();
+						ctx.fillStyle = "red";
+						ctx.beginPath();
+						ctx.moveTo(5,70);
+						ctx.lineTo(10,80);
+						ctx.lineTo(15,70);
+						ctx.fill();
+					}//end draw flame
+					ctx.translate(10,50);
+					ctx.rotate(toRadians(-r));
+					ctx.translate(-x,-y);
+				}//end drawRocket
+				
+								
+				function findin(x,array){
+					var found = false;
+					for(var i=0; i<array.length; i++){
+							if(array[i] == x){
+								found = true;
+							}//end if true
+					}//for
+					return(found);
+				}//end findin
+								
+				
+				function calibAng(ang){
+					var newang = ang;
+					if(ang >= 360){
+						newang = ang-360;
+					}
+					else if(ang < 0){
+						newang = ang + 360;
+					}
+					return(newang);
+				}//calib ang
+				
+				
+				function refAng(ang){
+					var ref = 0;
+					if(ang > 0 && ang <90){
+						ref = 90-ang;
+					}
+					else if(ang > 90 && ang < 180){
+						ref = ang-90;
+					}
+					else if(ang > 180 && ang < 270){
+						ref = 90-(ang-180);
+					}
+					else if(ang < 360 && ang > 270){
+						ref = ang-270;
+					}
+					return(90-ref);
+					//return(ref);
+				}//end refang
+				
+				function getQuad(ang){
+					var quad = 0;
+					if(ang > 0 && ang <90){
+						quad = 1;
+					}
+					else if(ang > 90 && ang < 180){
+						quad = 2;
+					}
+					else if(ang > 180 && ang < 270){
+						quad = 3;
+					}
+					else if(ang < 360 && ang > 270){
+						quad = 4;
+					}
+					return(quad);
+				}//get quad
+				
+				
+				var allowRev = true;
+				function game(){
+					canv.width = window.innerWidth;
+					canv.height = window.innerHeight;
+					var wid = window.innerWidth;
+					var hig = window.innerHeight;
+					
+					if(dead == false){
+						if(findin(39,keys)){
+							theta+=rotateSpd;
+							alpha-=rotateSpd;
+						}
+						if(findin(37,keys)){
+							theta-=rotateSpd;
+							alpha+=rotateSpd;
+						}
+						
+						if(findin(38,keys)){
+							drawThrust = true;
+						}
+						else if(findin(72,keys)){
+							if(vy > 3){
+								//drawThrust = true;
+							}
+							else if(vy < -3){
+								drawThrust = false;
+							}
+						}
+						else{
+							drawThrust = false;
+						}
+					
+					
+						if(findin(82,keys) && allowRev == true){
+							allowRev = false;
+							alpha = alpha + 180;
+						}
+						else if(findin(82,keys) == false){
+							allowRev = true;
+						}
+					
+						//console.log(keys);
+					
+						
+						
+					}//end allow controls
+					else{
+						//console.log(keys);
+						if(findin(13,keys)){
+							dead = false;
+							theta = 0;
+							alpha = 90;
+							rx = 160;
+							ry = hig*0.9-20;
+							vx = 0;
+							vy = 0;
+						}
+					
+					}//end dead controld
+					
+					theta = calibAng(theta);
+					alpha = calibAng(alpha);
+					
+					var gamma = refAng(alpha);
+					
+					if(drawThrust){
+						var tx = thrust*Math.cos(toRadians(gamma));
+						var ty = thrust*Math.sin(toRadians(gamma));
+						var q = getQuad(alpha);
+						//console.log(gamma);
+						if(q == 2){
+							tx = -tx;
+						}
+						else if(q == 3){
+							ty = -ty;
+							tx = -tx;
+						}
+						else if(q == 4){
+							ty = -ty;
+						}
+					}//end if it is thrusting
+					else{
+						var tx=0;
+						var ty=0;
+					}
+					
+					var dir =0;
+					if(vx != 0){
+						dir = -(vx/Math.abs(vx));
+					}//airRes dir
+					
+					var airR = airResistance * dir;
+					
+					
+					
+					vx = vx + (0.5*(tx+airR));
+					
+					if(ry < hig*0.9-20){
+						vy = vy+(0.5*(grav-(ty)));
+					}
+					else{
+						
+						var maxYimpact = 5;
+						var maxXimpact = 10;
+						if(theta > 25 && theta < 335 ){
+							dead = true;
+						}//if tipped
+						else{
+							theta = 0;
+							alpha = 90;
+						}	
+						if(vx < -maxXimpact || vx > maxXimpact){
+							dead = true;
+						}//end if hit gound too fast
+						if(vy > maxYimpact){
+							dead = true;
+						}
+						
+						vx=0;
+						vy=0;
+						vy = vy-ty;
+					}//end if on ground
+					
+					if(ry > hig*0.9-20){
+						ry = hig*0.9-20;
+					}//be sure it did not dig into the ground
+					
+					
+					ry = ry+vy;
+					rx = rx+vx;
+					
+					
+					
+					drawSky();
+					ctx.fillStyle = "yellow";
+					ctx.fillRect(0,hig*0.9,wid,100);
+					ctx.fillStyle = "grey";
+					ctx.fillRect(100,hig*0.9-100,35,100);
+					drawRocket(rx,ry,theta,drawThrust);
+					
+					if(dead == true){
+						vx = 0;
+						vy = 0;
+						ctx.fillStyle = "rgba(200,0,0,0.7)";
+						ctx.fillRect(0,0,wid,hig);
+						ctx.fillStyle = "black";
+						ctx.font = "30px Arial";
+						ctx.fillText("Press ENTER to restart", 100,100);
+					}
+					//console.log(theta);
+					
+					
+				}//end game
+				
+				
+				document.addEventListener("keydown",function(event){
+					//console.log(event.keyCode);
+					var isin = false;
+					for(var i=0; i<keys.length; i++){
+						if(keys[i] == event.keyCode){
+							isin = true;
+						}//if it is, say it was found
+					}//for
+					if(isin == false){
+						keys.push(event.keyCode);
+					}//end adding it
+					//console.log(keys);
+				});
+				document.addEventListener("keyup",function(event){
+					for(var i=0; i<keys.length; i++){
+						if(keys[i] == event.keyCode){
+							keys.splice(i,1);
+						}//if
+					}//for
+				});
+				
+				window.setInterval(game,10);
+		
+		</script>
+
+	</html>
