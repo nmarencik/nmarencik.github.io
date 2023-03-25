@@ -1,0 +1,27 @@
+
+
+body{
+	padding-left: 100px;
+	padding-right: 100px;
+}
+			
+.content-header{
+	padding-left: 150px;
+	margin-top: 20px;
+	background-color: #f5f4f2;
+}
+				
+.content-text{
+	padding-left: 100px;
+	margin-top: 30px;
+	margin-bottom: 70px;
+	margin-right: 10%;
+}
+
+p > img{
+	float: right;
+	margin-right: 0px;
+	margin-left: 100px;
+}
+
+
