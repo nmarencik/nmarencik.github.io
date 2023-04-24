@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>working with hml</title>
+<script>
+function loadXML() {
+          var XMLhttp = new XMLHttpRequest();
+          XMLhttp.onreadystatechange = function() {
+               if (this.readyState == 4 && this.status == 200) 
+               {
+               document.getElementById("testBox").innerHTML = XMLhttp.responseText;
+			console.log(XMLhttp);
+                    var xmlObject = this.responseXML;
+			//alert(xmlObject.getElementsByTagName("PLANT").length);                    
+
+			document.getElementById("theCount").innerHTML = xmlObject.getElementsByTagName("PLANT").length;
+               }
+          };
+XMLhttp.open("GET", "https://raw.githubusercontent.com/nmarencik/nmarencik.github.io/main/xml/plants.xml", true);
+XMLhttp.overrideMimeType('text/xml');
+XMLhttp.send();
+
+   } 
+</script>
+</head>
+
+<body onLoad="loadXML()">
+Hello
+     <div id="testBox"></div>
+     <p>How many records? <span id="theCount"></span></p>
+</body>
+</html>
