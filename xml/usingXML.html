@@ -3,7 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <title>working with hml</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
 <script>
+
+//this is too hacky. change at some point
+let card_count=0;
+
+function addPlantCard(name, price, count){
+	var card_div = document.getElementById("card-div");
+	
+	var card_style = "";
+	if(card_count < 2){
+		card_style = "float: left;";
+	}
+	
+	card_div.innerHTML += '<div class="card" style="width: 18rem; ' +card_style+ '"><div class="card-body"><h5 class="card-title">'+name+'</h5><p class="card-text"><b>Price: </b>'+price+'<br>'+parseInt(count)+' left in stock</p><a href="#" class="btn btn-primary">Buy now</a></div></div>';
+	card_count+=1;
+	
+	card_count=card_count%3;
+}
+
+function getXMLChild(xml_item, indexval){
+	return(xml_item.childNodes[indexval].childNodes[0].nodeValue);
+}
+
+
 function loadXML() {
           var XMLhttp = new XMLHttpRequest();
           XMLhttp.onreadystatechange = function() {
@@ -15,6 +41,17 @@ function loadXML() {
 			//alert(xmlObject.getElementsByTagName("PLANT").length);                    
 
 			document.getElementById("theCount").innerHTML = xmlObject.getElementsByTagName("PLANT").length;
+			
+			var plant_list = xmlObject.getElementsByTagName("PLANT");
+			for(i=0; i<plant_list.length; i++){
+				console.log(plant_list[i].childNodes[1].childNodes[0].nodeValue);
+				addPlantCard(getXMLChild(plant_list[i], 1), getXMLChild(plant_list[i], 9), getXMLChild(plant_list[i], 11));
+			}
+			
+			
+			
+			
+			
                }
           };
 XMLhttp.open("GET", "https://raw.githubusercontent.com/nmarencik/nmarencik.github.io/main/xml/plants.xml", true);
@@ -27,7 +64,20 @@ XMLhttp.send();
 
 <body onLoad="loadXML()">
 Hello
-     <div id="testBox"></div>
+     <div id="testBox" hidden></div>
      <p>How many records? <span id="theCount"></span></p>
+	
+	<!-- sample code taken right from bootstrap site -->
+	<div class="card" style="width: 18rem;" hidden>
+		<div class="card-body">
+			<h5 class="card-title">Card title</h5>
+			<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+			<a href="#" class="btn btn-primary">Go somewhere</a>
+		</div>
+	</div>
+	
+	<div id="card-div">
+	</div> <!--card-div-->
+	 
 </body>
 </html>
