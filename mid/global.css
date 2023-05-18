@@ -1,0 +1,56 @@
+
+
+body{
+	padding-left: 100px;
+	padding-right: 100px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+}
+			
+.content-header{
+	padding-left: 150px;
+	margin-top: 20px;
+	background-color: #f5f4f2;
+	font-size: 30px;
+}
+				
+.content-text{
+	padding-left: 100px;
+	margin-top: 30px;
+	margin-bottom: 70px;
+	margin-right: 10%;
+	font-size: 14px;
+}
+
+p > img{
+	float: right;
+	margin-right: 0px;
+	margin-left: 100px;
+}
+
+.card {
+	background-color: lightblue;
+	height: 300px;
+	margin-bottom: 100px;
+	float: left;
+	margin-left: 20px;
+}
+
+.card-title {
+	margin-bottom: 30px;	
+}
+
+
+.command {
+	font-family: 'Courier New', monospace;
+	background-color: lightgrey;
+}
+
+
+.simple-button {
+		background-color: green;
+		color: white;
+		padding: 10px;
+		
+}
+
